@@ -21,9 +21,30 @@ const PanelProductorIA = () => {
   useEffect(() => {
     localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
   }, [ideasGuardadas]);
+  const [capitulo, setCapitulo] = useState(() => {
+  return localStorage.getItem('capituloActual') || '';
+});
+
+useEffect(() => {
+  localStorage.setItem('capituloActual', capitulo);
+}, [capitulo]);
+
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+  <input
+    type="text"
+    value={capitulo}
+    onChange={(e) => setCapitulo(e.target.value)}
+    placeholder="Nombre del capítulo en producción"
+    className="w-full sm:w-2/3 p-3 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
+  />
+  <span className="text-sm text-gray-600 dark:text-gray-400">
+    🎬 Capítulo en producción
+  </span>
+</div>
+
       <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
         Radio Online Loartune 🎙️
       </h1>
