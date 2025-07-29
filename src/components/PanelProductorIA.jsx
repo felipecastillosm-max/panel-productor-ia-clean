@@ -42,17 +42,26 @@ const PanelProductorIA = () => {
         >
           Guardar idea 💡
         </button>
-
         <ul className="space-y-2 pt-4">
-          {ideasGuardadas.map((item, index) => (
-            <li
-              key={index}
-              className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
-            >
-              • {item}
-            </li>
-          ))}
-        </ul>
+  {ideasGuardadas.map((item, index) => (
+    <li
+      key={index}
+      className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
+    >
+      <span>• {item}</span>
+      <button
+        onClick={() =>
+          setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))
+        }
+        className="text-red-500 hover:text-red-700 font-bold text-sm"
+      >
+        ✖
+      </button>
+    </li>
+  ))}
+</ul>
+
+
       </div>
     </div>
   );
