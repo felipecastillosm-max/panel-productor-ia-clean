@@ -1,5 +1,6 @@
 // src/components/PanelProductorIA.jsx
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
 
 const PanelProductorIA = () => {
   const [idea, setIdea] = useState('');
@@ -7,13 +8,14 @@ const PanelProductorIA = () => {
     const datosGuardados = localStorage.getItem('ideasGuardadas');
     return datosGuardados ? JSON.parse(datosGuardados) : [];
   });
-
-  const [capitulo, setCapitulo] = useState(() => {
-    return localStorage.getItem('capitulo') || '';
-  });
-
+  const [capituloActual, setCapituloActual] = useState('');
   const [capituloSiguiente, setCapituloSiguiente] = useState('');
-  const [modoManual, setModoManual] = useState(false);
+  const [historialCapitulos, setHistorialCapitulos] = useState([]);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
+  }, [ideasGuardadas]);
 
   const guardarIdea = () => {
     if (idea.trim() !== '') {
@@ -25,35 +27,35 @@ const PanelProductorIA = () => {
     }
   };
 
-  const limpiarTodo = () => {
-    setIdea('');
-    setIdeasGuardadas([]);
-    setCapitulo('');
-    setCapituloSiguiente('');
-    setModoManual(false);
-    localStorage.clear();
-  };
-
-  const confirmarSiguiente = () => {
-    if (!modoManual && capitulo) {
-      const num = parseInt(capitulo.match(/\d+/)?.[0] || 0);
-      setCapituloSiguiente((num + 1).toString());
-    }
-  };
-
-  useEffect(() => {
-    localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
-    localStorage.setItem('capitulo', capitulo);
-  }, [ideasGuardadas, capitulo]);
-
-  const handleSiguienteKeyDown = (e) => {
+  const manejarKeyDown = (e) => {
     if (e.key === 'Enter') {
-      confirmarSiguiente();
-    }
-    if (e.key === ' ') {
-      setModoManual(true);
+      const siguiente = capituloActual && !isNaN(capituloActual)
+        ? parseInt(capituloActual) + 1
+        : 1;
+      setCapituloSiguiente(siguiente.toString());
+    } else if (e.key === ' ') {
       setCapituloSiguiente('');
     }
+  };
+
+  const confirmarCapitulo = () => {
+    if (capituloActual.trim() !== '') {
+      setHistorialCapitulos([...historialCapitulos, capituloActual]);
+    }
+  };
+
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Ideas del Productor IA', 10, 10);
+    ideasGuardadas.forEach((item, index) => {
+      doc.text(`• ${item.texto}`, 10, 20 + index * 10);
+    });
+    doc.save('ideas_productor_ia.pdf');
+  };
+
+  const borrarTodo = () => {
+    setIdeasGuardadas([]);
+    localStorage.removeItem('ideasGuardadas');
   };
 
   return (
@@ -62,39 +64,36 @@ const PanelProductorIA = () => {
         Radio Online Loartune 🎙️
       </h1>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <input
-          type="text"
-          value={capitulo}
-          onChange={(e) => setCapitulo(e.target.value)}
-          placeholder="Capítulo actual"
-          className="w-full sm:w-1/2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-800 dark:text-white"
-        />
-
-        <div className="flex gap-2 items-center w-full sm:w-1/2">
-         <input
-  type="text"
-  value={capituloSiguiente}
-  onChange={(e) => setCapituloSiguiente(e.target.value)}
-  onKeyDown={manejarKeyDown}
-  placeholder={
-    capituloActual.trim() === ''
-      ? '1'
-      : isNaN(capituloActual)
-        ? ''
-        : (parseInt(capituloActual) + 1).toString()
-  }
-  className="border rounded-md p-2 w-40"
-/>
-
-
-          <button
-            onClick={confirmarSiguiente}
-            className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-          >
-            Confirmar ➔
-          </button>
+      <div className="flex justify-between items-center space-x-4">
+        <div className="flex-1">
+          <input
+            type="text"
+            value={capituloActual}
+            onChange={(e) => setCapituloActual(e.target.value)}
+            placeholder="Nombre del capítulo"
+            className="border rounded-md p-2 w-full"
+          />
         </div>
+        <div>
+          <input
+            type="text"
+            value={capituloSiguiente}
+            onChange={(e) => setCapituloSiguiente(e.target.value)}
+            onKeyDown={manejarKeyDown}
+            placeholder={
+              capituloActual.trim() === '' || isNaN(capituloActual)
+                ? '1'
+                : (parseInt(capituloActual) + 1).toString()
+            }
+            className="border rounded-md p-2 w-24 text-center"
+          />
+        </div>
+        <button
+          onClick={confirmarCapitulo}
+          className="bg-green-600 text-white px-3 py-2 rounded-md hover:bg-green-700"
+        >
+          Confirmar
+        </button>
       </div>
 
       <div className="space-y-4">
@@ -105,7 +104,7 @@ const PanelProductorIA = () => {
           placeholder="Escribe tu idea, frase o acción para el programa"
           className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
         />
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={guardarIdea}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
@@ -113,12 +112,35 @@ const PanelProductorIA = () => {
             Guardar idea 💡
           </button>
           <button
-            onClick={limpiarTodo}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+            onClick={borrarTodo}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
           >
-            Limpiar todo 🩹
+            Borrar todo 🗑️
+          </button>
+          <button
+            onClick={() => setMostrarHistorial(!mostrarHistorial)}
+            className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+          >
+            Historial 📚
+          </button>
+          <button
+            onClick={exportarPDF}
+            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+          >
+            Exportar PDF 📄
           </button>
         </div>
+
+        {mostrarHistorial && (
+          <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md mt-4">
+            <h3 className="font-semibold text-lg mb-2 text-gray-800 dark:text-white">Historial de capítulos:</h3>
+            <ul className="list-disc pl-6 text-gray-800 dark:text-white">
+              {historialCapitulos.map((cap, idx) => (
+                <li key={idx}>{cap}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <ul className="space-y-2 pt-4">
           {ideasGuardadas.map((item, index) => (
