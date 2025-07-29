@@ -126,12 +126,30 @@ const PanelProductorIA = () => {
           </div>
         )}
 
-        <ul className="space-y-2 pt-4">
-          {ideasGuardadas.map((item, index) => (
-            <li
-              key={index}
-              className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
-            >
+       {historialVisible && (
+  <ul className="space-y-2 pt-4">
+    {historialCapitulos.map((cap, index) => (
+      <li
+        key={index}
+        className="flex justify-between items-center p-3 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm"
+      >
+        <span className="text-gray-800 dark:text-white">
+          📌 {cap.numero} — {cap.nombre}
+        </span>
+        <button
+          onClick={() => {
+            setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+            setIdeasGuardadas(cap.ideas || []);
+          }}
+          className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Recuperar
+        </button>
+      </li>
+    ))}
+  </ul>
+)}
+
               <label className="flex items-center gap-2 w-full">
                 <input
                   type="checkbox"
