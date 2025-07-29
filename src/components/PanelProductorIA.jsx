@@ -7,6 +7,14 @@ const PanelProductorIA = () => {
   const [idea, setIdea] = useState('');
   const [ideasGuardadas, setIdeasGuardadas] = useState([]);
   const [historialVisible, setHistorialVisible] = useState(false);
+  const [capituloActual, setCapituloActual] = useState('');
+const [numeroCapitulo, setNumeroCapitulo] = useState(1);
+const [historialCapitulos, setHistorialCapitulos] = useState(() => {
+  const data = localStorage.getItem('historialCapitulos');
+  return data ? JSON.parse(data) : [];
+});
+const [mostrarHistorial, setMostrarHistorial] = useState(false);
+
 
   // Cargar desde localStorage en entorno cliente
   useEffect(() => {
