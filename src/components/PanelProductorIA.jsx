@@ -149,6 +149,32 @@ const PanelProductorIA = () => {
     ))}
   </ul>
 )}
+const confirmarCapitulo = () => {
+  const num = capituloSiguiente.trim() === ''
+    ? capituloActual.trim() === ''
+      ? 1
+      : isNaN(capituloActual)
+        ? 1
+        : parseInt(capituloActual.match(/\d+/)) + 1
+    : parseInt(capituloSiguiente);
+
+  const nombre = capituloActual.startsWith("Capítulo") ? `Capítulo ${num}` : capituloActual;
+
+  setCapituloActual(nombre);
+  setCapituloSiguiente('');
+
+  const nuevoHistorial = [
+    ...historialCapitulos,
+    {
+      numero: num,
+      nombre: nombre,
+      ideas: [...ideasGuardadas],
+    },
+  ];
+
+  setHistorialCapitulos(nuevoHistorial);
+  localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
+};
 
               <label className="flex items-center gap-2 w-full">
                 <input
