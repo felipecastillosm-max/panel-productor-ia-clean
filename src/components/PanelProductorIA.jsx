@@ -1,3 +1,4 @@
+// src/components/PanelProductorIA.jsx
 import React, { useState, useEffect } from 'react';
 
 const PanelProductorIA = () => {
@@ -8,17 +9,10 @@ const PanelProductorIA = () => {
   });
 
   const [capitulo, setCapitulo] = useState(() => {
-    return localStorage.getItem('capituloActual') || '';
+    return localStorage.getItem('capitulo') || '';
   });
 
-  const [capituloNombre, setCapituloNombre] = useState(() => {
-    return localStorage.getItem('capituloNombre') || '';
-  });
-
-  const [capituloSiguiente, setCapituloSiguiente] = useState(() => {
-    return localStorage.getItem('capituloSiguiente') || '';
-  });
-
+  const [capituloSiguiente, setCapituloSiguiente] = useState('');
   const [modoManual, setModoManual] = useState(false);
 
   const guardarIdea = () => {
@@ -35,49 +29,32 @@ const PanelProductorIA = () => {
     setIdea('');
     setIdeasGuardadas([]);
     setCapitulo('');
-    setCapituloNombre('');
     setCapituloSiguiente('');
+    setModoManual(false);
     localStorage.clear();
   };
 
-  const handleCapituloChange = (e) => {
-    const valor = e.target.value;
-    setCapitulo(valor);
-
-    if (!modoManual && !isNaN(Number(valor))) {
-      const siguiente = Number(valor) + 1;
-      setCapituloSiguiente(String(siguiente));
-    }
-  };
-
-  const handleCapituloKey = (e) => {
-    if (e.key === 'Enter') {
-      if (!modoManual && !isNaN(Number(capitulo))) {
-        setCapituloSiguiente(String(Number(capitulo) + 1));
-      }
-    }
-    if (e.key === ' ') {
-      e.preventDefault();
-      setModoManual(true);
-      setCapituloSiguiente('');
+  const confirmarSiguiente = () => {
+    if (!modoManual && capitulo) {
+      const num = parseInt(capitulo.match(/\d+/)?.[0] || 0);
+      setCapituloSiguiente((num + 1).toString());
     }
   };
 
   useEffect(() => {
     localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
-  }, [ideasGuardadas]);
+    localStorage.setItem('capitulo', capitulo);
+  }, [ideasGuardadas, capitulo]);
 
-  useEffect(() => {
-    localStorage.setItem('capituloActual', capitulo);
-  }, [capitulo]);
-
-  useEffect(() => {
-    localStorage.setItem('capituloNombre', capituloNombre);
-  }, [capituloNombre]);
-
-  useEffect(() => {
-    localStorage.setItem('capituloSiguiente', capituloSiguiente);
-  }, [capituloSiguiente]);
+  const handleSiguienteKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      confirmarSiguiente();
+    }
+    if (e.key === ' ') {
+      setModoManual(true);
+      setCapituloSiguiente('');
+    }
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
@@ -85,36 +62,41 @@ const PanelProductorIA = () => {
         Radio Online Loartune 🎙️
       </h1>
 
-      {/* Capítulo actual y siguiente */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
         <input
           type="text"
           value={capitulo}
-          onChange={handleCapituloChange}
-          onKeyDown={handleCapituloKey}
-          placeholder="01"
-          className="w-20 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white text-center"
+          onChange={(e) => setCapitulo(e.target.value)}
+          placeholder="Capítulo actual"
+          className="w-full sm:w-1/2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-800 dark:text-white"
         />
-        <input
-          type="text"
-          value={capituloNombre}
-          onChange={(e) => setCapituloNombre(e.target.value)}
-          placeholder="Nombre del capítulo actual"
-          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 dark:bg-gray-800 dark:text-white"
-        />
-        <input
-          type="text"
-          value={capituloSiguiente}
-          onChange={(e) => {
-            setModoManual(true);
-            setCapituloSiguiente(e.target.value);
-          }}
-          placeholder={capitulo ? String(Number(capitulo) + 1).padStart(2, '0') : 'Siguiente'}
-          className="w-28 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-800 dark:text-white text-center"
-        />
+
+        <div className="flex gap-2 items-center w-full sm:w-1/2">
+         <input
+  type="text"
+  value={capituloSiguiente}
+  onChange={(e) => setCapituloSiguiente(e.target.value)}
+  onKeyDown={manejarKeyDown}
+  placeholder={
+    capituloActual.trim() === ''
+      ? '1'
+      : isNaN(capituloActual)
+        ? ''
+        : (parseInt(capituloActual) + 1).toString()
+  }
+  className="border rounded-md p-2 w-40"
+/>
+
+
+          <button
+            onClick={confirmarSiguiente}
+            className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+          >
+            Confirmar ➔
+          </button>
+        </div>
       </div>
 
-      {/* Input de ideas */}
       <div className="space-y-4">
         <input
           type="text"
@@ -123,7 +105,7 @@ const PanelProductorIA = () => {
           placeholder="Escribe tu idea, frase o acción para el programa"
           className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
         />
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex gap-2">
           <button
             onClick={guardarIdea}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
@@ -134,11 +116,10 @@ const PanelProductorIA = () => {
             onClick={limpiarTodo}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
           >
-            Limpiar todo 🧹
+            Limpiar todo 🩹
           </button>
         </div>
 
-        {/* Lista de ideas */}
         <ul className="space-y-2 pt-4">
           {ideasGuardadas.map((item, index) => (
             <li
@@ -186,6 +167,3 @@ const PanelProductorIA = () => {
 };
 
 export default PanelProductorIA;
-
-
-
