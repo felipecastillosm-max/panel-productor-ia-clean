@@ -2,6 +2,14 @@
 import React, { useState, useEffect } from 'react';
 
 const PanelProductorIA = () => {
+  const [capitulo, setCapitulo] = useState(() => {
+    return localStorage.getItem('capituloActual') || '';
+  });
+
+  const [capituloSiguiente, setCapituloSiguiente] = useState(() => {
+    return localStorage.getItem('capituloSiguiente') || '';
+  });
+
   const [idea, setIdea] = useState('');
   const [ideasGuardadas, setIdeasGuardadas] = useState(() => {
     const datosGuardados = localStorage.getItem('ideasGuardadas');
@@ -18,36 +26,53 @@ const PanelProductorIA = () => {
     }
   };
 
+  const limpiarTodo = () => {
+    setIdea('');
+    setIdeasGuardadas([]);
+    setCapitulo('');
+    setCapituloSiguiente('');
+    localStorage.clear();
+  };
+
   useEffect(() => {
     localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
   }, [ideasGuardadas]);
-  const [capitulo, setCapitulo] = useState(() => {
-  return localStorage.getItem('capituloActual') || '';
-});
 
-useEffect(() => {
-  localStorage.setItem('capituloActual', capitulo);
-}, [capitulo]);
+  useEffect(() => {
+    localStorage.setItem('capituloActual', capitulo);
+  }, [capitulo]);
 
+  useEffect(() => {
+    localStorage.setItem('capituloSiguiente', capituloSiguiente);
+  }, [capituloSiguiente]);
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-  <input
-    type="text"
-    value={capitulo}
-    onChange={(e) => setCapitulo(e.target.value)}
-    placeholder="Nombre del capítulo en producción"
-    className="w-full sm:w-2/3 p-3 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
-  />
-  <span className="text-sm text-gray-600 dark:text-gray-400">
-    🎬 Capítulo en producción
-  </span>
-</div>
-
       <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
         Radio Online Loartune 🎙️
       </h1>
+
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <input
+          type="text"
+          value={capitulo}
+          onChange={(e) => setCapitulo(e.target.value)}
+          placeholder="Capítulo actual"
+          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
+        />
+        <input
+          type="text"
+          value={capituloSiguiente}
+          onChange={(e) => setCapituloSiguiente(e.target.value)}
+          placeholder="Capítulo siguiente..."
+          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-800 dark:text-white"
+        />
+      </div>
+
+      <p className="text-center text-gray-600 dark:text-gray-400 italic">
+        🎧 Estás trabajando en: <strong>{capitulo || 'sin título aún'}</strong><br />
+        🕒 Próximo episodio: <strong>{capituloSiguiente || 'sin definir'}</strong>
+      </p>
 
       <div className="space-y-4">
         <input
@@ -57,12 +82,20 @@ useEffect(() => {
           placeholder="Escribe tu idea, frase o acción para el programa"
           className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
         />
-        <button
-          onClick={guardarIdea}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-        >
-          Guardar idea 💡
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={guardarIdea}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Guardar idea 💡
+          </button>
+          <button
+            onClick={limpiarTodo}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+          >
+            Limpiar todo 🧹
+          </button>
+        </div>
 
         <ul className="space-y-2 pt-4">
           {ideasGuardadas.map((item, index) => (
@@ -73,24 +106,24 @@ useEffect(() => {
               <label className="flex items-center gap-2 w-full">
                 <input
                   type="checkbox"
-                  checked={item.checked}
                   onChange={(e) => {
                     const nuevasIdeas = [...ideasGuardadas];
                     nuevasIdeas[index] = {
-                      ...item,
-                      checked: e.target.checked
+                      texto: typeof item === 'string' ? item : item.texto,
+                      checked: e.target.checked,
                     };
                     setIdeasGuardadas(nuevasIdeas);
                   }}
+                  checked={typeof item === 'object' && item.checked}
                 />
                 <span
                   className={
-                    (item.checked
+                    (typeof item === 'object' && item.checked
                       ? 'line-through text-gray-500 dark:text-gray-400'
                       : '') + ' flex-1'
                   }
                 >
-                  • {item.texto}
+                  • {typeof item === 'string' ? item : item.texto}
                 </span>
               </label>
 
@@ -111,4 +144,5 @@ useEffect(() => {
 };
 
 export default PanelProductorIA;
+
 
