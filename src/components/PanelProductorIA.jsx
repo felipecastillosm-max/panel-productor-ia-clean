@@ -1,10 +1,11 @@
 // src/components/PanelProductorIA.jsx
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 const PanelProductorIA = () => {
   const [idea, setIdea] = useState('');
-  const [ideasGuardadas, setIdeasGuardadas] = useState([]);
-
+  const [ideasGuardadas, setIdeasGuardadas] = useState(() => {
+  const datosGuardados = localStorage.getItem('ideasGuardadas');
+  return datosGuardados ? JSON.parse(datosGuardados) : [];
+});
   const guardarIdea = () => {
     if (idea.trim() !== '') {
       setIdeasGuardadas([
@@ -14,6 +15,9 @@ const PanelProductorIA = () => {
       setIdea('');
     }
   };
+useEffect(() => {
+  localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
+}, [ideasGuardadas]);
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
