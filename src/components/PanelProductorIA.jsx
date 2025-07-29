@@ -1,15 +1,5 @@
 // src/components/PanelProductorIA.jsx
-import React from 'react';
-
-const PanelProductorIA = () => {
-  return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
-      <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
-        Radio Online Loartune🎙️
-      </h1>
-      
-      {/* Aquí irán los próximos fragmentos */}
-      import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 const PanelProductorIA = () => {
   const [idea, setIdea] = useState('');
@@ -17,7 +7,10 @@ const PanelProductorIA = () => {
 
   const guardarIdea = () => {
     if (idea.trim() !== '') {
-      setIdeasGuardadas([...ideasGuardadas, idea]);
+      setIdeasGuardadas([
+        ...ideasGuardadas,
+        { texto: idea, checked: false }
+      ]);
       setIdea('');
     }
   };
@@ -25,7 +18,7 @@ const PanelProductorIA = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
       <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
-        Panel del Productor IA 🎙️
+        Radio Online Loartune 🎙️
       </h1>
 
       <div className="space-y-4">
@@ -42,58 +35,49 @@ const PanelProductorIA = () => {
         >
           Guardar idea 💡
         </button>
-       <ul className="space-y-2 pt-4">
-  {ideasGuardadas.map((item, index) => (
-    <li
-      key={index}
-      className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
-    >
-      <label className="flex items-center gap-2 w-full">
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            const nuevasIdeas = [...ideasGuardadas];
-            nuevasIdeas[index] = {
-              texto: typeof item === 'string' ? item : item.texto,
-              checked: e.target.checked,
-            };
-            setIdeasGuardadas(nuevasIdeas);
-          }}
-          checked={typeof item === 'object' && item.checked}
-        />
-        <span
-          className={
-            (typeof item === 'object' && item.checked
-              ? 'line-through text-gray-500 dark:text-gray-400'
-              : '') + ' flex-1'
-          }
-        >
-          • {typeof item === 'string' ? item : item.texto}
-        </span>
-      </label>
 
-      <button
-        onClick={() =>
-          setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))
-        }
-        className="text-red-500 hover:text-red-700 font-bold text-sm"
-      >
-        ✖
-      </button>
-    </li>
-  ))}
-</ul>
+        <ul className="space-y-2 pt-4">
+          {ideasGuardadas.map((item, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
+            >
+              <label className="flex items-center gap-2 w-full">
+                <input
+                  type="checkbox"
+                  onChange={(e) => {
+                    const nuevasIdeas = [...ideasGuardadas];
+                    nuevasIdeas[index] = {
+                      texto: typeof item === 'string' ? item : item.texto,
+                      checked: e.target.checked,
+                    };
+                    setIdeasGuardadas(nuevasIdeas);
+                  }}
+                  checked={typeof item === 'object' && item.checked}
+                />
+                <span
+                  className={
+                    (typeof item === 'object' && item.checked
+                      ? 'line-through text-gray-500 dark:text-gray-400'
+                      : '') + ' flex-1'
+                  }
+                >
+                  • {typeof item === 'string' ? item : item.texto}
+                </span>
+              </label>
 
-
-
+              <button
+                onClick={() =>
+                  setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))
+                }
+                className="text-red-500 hover:text-red-700 font-bold text-sm"
+              >
+                ✖
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
-  );
-};
-
-export default PanelProductorIA;
-
-      
     </div>
   );
 };
