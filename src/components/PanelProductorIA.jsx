@@ -4,19 +4,15 @@ import React, { useState, useEffect } from 'react';
 const PanelProductorIA = () => {
   const [capituloActual, setCapituloActual] = useState('');
   const [capituloSiguiente, setCapituloSiguiente] = useState('');
+  const [numeroCapitulo, setNumeroCapitulo] = useState(1);
   const [idea, setIdea] = useState('');
   const [ideasGuardadas, setIdeasGuardadas] = useState([]);
-  const [historialVisible, setHistorialVisible] = useState(false);
-  const [capituloActual, setCapituloActual] = useState('');
-const [numeroCapitulo, setNumeroCapitulo] = useState(1);
-const [historialCapitulos, setHistorialCapitulos] = useState(() => {
-  const data = localStorage.getItem('historialCapitulos');
-  return data ? JSON.parse(data) : [];
-});
-const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [historialCapitulos, setHistorialCapitulos] = useState(() => {
+    const data = localStorage.getItem('historialCapitulos');
+    return data ? JSON.parse(data) : [];
+  });
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
-
-  // Cargar desde localStorage en entorno cliente
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const guardadas = localStorage.getItem('ideasGuardadas');
@@ -24,33 +20,28 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
     }
   }, []);
 
-  // Guardar en localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
     }
   }, [ideasGuardadas]);
 
-  // Confirmar número de capítulo
   const confirmarCapitulo = () => {
     const num = capituloSiguiente.trim() === ''
-      ? capituloActual.trim() === ''
-        ? 1
-        : isNaN(capituloActual)
-          ? 1
-          : parseInt(capituloActual) + 1
+      ? numeroCapitulo
       : parseInt(capituloSiguiente);
-    setCapituloActual(`Capítulo ${num}`);
+
+    setCapituloActual('');
+    setNumeroCapitulo(num);
+    setHistorialCapitulos([...historialCapitulos, { numero: num, nombre: capituloActual }]);
     setCapituloSiguiente('');
   };
 
-  // Manejar Enter (confirmar) o Space (modo manual)
   const manejarKeyDown = (e) => {
     if (e.key === 'Enter') confirmarCapitulo();
     if (e.key === ' ') setCapituloSiguiente('');
   };
 
-  // Guardar idea
   const guardarIdea = () => {
     if (idea.trim() !== '') {
       setIdeasGuardadas([...ideasGuardadas, { texto: idea, checked: false }]);
@@ -58,7 +49,6 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
     }
   };
 
-  // Borrar todo
   const limpiarTodo = () => {
     setIdeasGuardadas([]);
   };
@@ -74,7 +64,7 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
           type="text"
           value={capituloActual}
           onChange={(e) => setCapituloActual(e.target.value)}
-          placeholder="Capítulo actual"
+          placeholder="Nombre del capítulo"
           className="border rounded-md p-2 flex-1"
         />
         <input
@@ -82,14 +72,8 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
           value={capituloSiguiente}
           onChange={(e) => setCapituloSiguiente(e.target.value)}
           onKeyDown={manejarKeyDown}
-          placeholder={
-            capituloActual.trim() === ''
-              ? '1'
-              : isNaN(capituloActual)
-                ? ''
-                : (parseInt(capituloActual) + 1).toString()
-          }
-          className="border rounded-md p-2 w-40"
+          placeholder={numeroCapitulo.toString()}
+          className="border rounded-md p-2 w-32"
         />
         <button
           onClick={confirmarCapitulo}
@@ -108,7 +92,7 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
           className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white"
         />
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <button
             onClick={guardarIdea}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -122,54 +106,66 @@ const [mostrarHistorial, setMostrarHistorial] = useState(false);
             Limpiar todo 🧽
           </button>
           <button
-            onClick={() => setHistorialVisible(!historialVisible)}
+            onClick={() => setMostrarHistorial(!mostrarHistorial)}
             className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800"
           >
-            {historialVisible ? 'Ocultar historial 📂' : 'Ver historial 📁'}
+            {mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}
           </button>
         </div>
 
-        {historialVisible && (
-          <ul className="space-y-2 pt-4">
-            {ideasGuardadas.map((item, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
-              >
-                <label className="flex items-center gap-2 w-full">
-                  <input
-                    type="checkbox"
-                    onChange={(e) => {
-                      const nuevasIdeas = [...ideasGuardadas];
-                      nuevasIdeas[index] = {
-                        texto: item.texto,
-                        checked: e.target.checked,
-                      };
-                      setIdeasGuardadas(nuevasIdeas);
-                    }}
-                    checked={item.checked}
-                  />
-                  <span
-                    className={
-                      (item.checked ? 'line-through text-gray-500 dark:text-gray-400' : '') + ' flex-1'
-                    }
-                  >
-                    • {item.texto}
-                  </span>
-                </label>
-                <button
-                  onClick={() => setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))}
-                  className="text-red-500 hover:text-red-700 font-bold text-sm"
-                >
-                  ✖
-                </button>
-              </li>
-            ))}
-          </ul>
+        {mostrarHistorial && (
+          <div className="pt-4 space-y-2">
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
+            <ul className="space-y-1">
+              {historialCapitulos.map((cap, idx) => (
+                <li key={idx} className="text-sm text-gray-800 dark:text-white">
+                  Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
+
+        <ul className="space-y-2 pt-4">
+          {ideasGuardadas.map((item, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
+            >
+              <label className="flex items-center gap-2 w-full">
+                <input
+                  type="checkbox"
+                  onChange={(e) => {
+                    const nuevasIdeas = [...ideasGuardadas];
+                    nuevasIdeas[index] = {
+                      texto: item.texto,
+                      checked: e.target.checked,
+                    };
+                    setIdeasGuardadas(nuevasIdeas);
+                  }}
+                  checked={item.checked}
+                />
+                <span
+                  className={
+                    (item.checked ? 'line-through text-gray-500 dark:text-gray-400' : '') + ' flex-1'
+                  }
+                >
+                  • {item.texto}
+                </span>
+              </label>
+              <button
+                onClick={() => setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))}
+                className="text-red-500 hover:text-red-700 font-bold text-sm"
+              >
+                ✖
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 
 export default PanelProductorIA;
+
