@@ -11,6 +11,10 @@ const PanelProductorIA = () => {
     return localStorage.getItem('capituloActual') || '';
   });
 
+  const [capituloNombre, setCapituloNombre] = useState(() => {
+    return localStorage.getItem('capituloNombre') || '';
+  });
+
   const [capituloSiguiente, setCapituloSiguiente] = useState(() => {
     return localStorage.getItem('capituloSiguiente') || '';
   });
@@ -31,6 +35,7 @@ const PanelProductorIA = () => {
     setIdea('');
     setIdeasGuardadas([]);
     setCapitulo('');
+    setCapituloNombre('');
     setCapituloSiguiente('');
     localStorage.clear();
   };
@@ -67,6 +72,10 @@ const PanelProductorIA = () => {
   }, [capitulo]);
 
   useEffect(() => {
+    localStorage.setItem('capituloNombre', capituloNombre);
+  }, [capituloNombre]);
+
+  useEffect(() => {
     localStorage.setItem('capituloSiguiente', capituloSiguiente);
   }, [capituloSiguiente]);
 
@@ -83,8 +92,15 @@ const PanelProductorIA = () => {
           value={capitulo}
           onChange={handleCapituloChange}
           onKeyDown={handleCapituloKey}
-          placeholder="Capítulo actual"
-          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"
+          placeholder="01"
+          className="w-20 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white text-center"
+        />
+        <input
+          type="text"
+          value={capituloNombre}
+          onChange={(e) => setCapituloNombre(e.target.value)}
+          placeholder="Nombre del capítulo actual"
+          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 dark:bg-gray-800 dark:text-white"
         />
         <input
           type="text"
@@ -93,8 +109,8 @@ const PanelProductorIA = () => {
             setModoManual(true);
             setCapituloSiguiente(e.target.value);
           }}
-          placeholder="Capítulo siguiente (manual)"
-          className="flex-1 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-800 dark:text-white"
+          placeholder={capitulo ? String(Number(capitulo) + 1).padStart(2, '0') : 'Siguiente'}
+          className="w-28 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-800 dark:text-white text-center"
         />
       </div>
 
@@ -170,5 +186,6 @@ const PanelProductorIA = () => {
 };
 
 export default PanelProductorIA;
+
 
 
