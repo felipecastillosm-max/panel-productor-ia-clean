@@ -42,13 +42,36 @@ const PanelProductorIA = () => {
         >
           Guardar idea 💡
         </button>
-        <ul className="space-y-2 pt-4">
+       <ul className="space-y-2 pt-4">
   {ideasGuardadas.map((item, index) => (
     <li
       key={index}
       className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm text-gray-800 dark:text-white"
     >
-      <span>• {item}</span>
+      <label className="flex items-center gap-2 w-full">
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            const nuevasIdeas = [...ideasGuardadas];
+            nuevasIdeas[index] = {
+              texto: typeof item === 'string' ? item : item.texto,
+              checked: e.target.checked,
+            };
+            setIdeasGuardadas(nuevasIdeas);
+          }}
+          checked={typeof item === 'object' && item.checked}
+        />
+        <span
+          className={
+            (typeof item === 'object' && item.checked
+              ? 'line-through text-gray-500 dark:text-gray-400'
+              : '') + ' flex-1'
+          }
+        >
+          • {typeof item === 'string' ? item : item.texto}
+        </span>
+      </label>
+
       <button
         onClick={() =>
           setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))
@@ -60,6 +83,7 @@ const PanelProductorIA = () => {
     </li>
   ))}
 </ul>
+
 
 
       </div>
