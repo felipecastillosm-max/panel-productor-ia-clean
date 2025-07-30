@@ -77,6 +77,22 @@ const PanelProductorIA = () => {
     setHistorialCapitulos(actualizado);
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
+import jsPDF from 'jspdf';
+
+const exportarPDF = () => {
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
+
+  doc.setFontSize(12);
+  doc.text('Ideas guardadas:', 10, 30);
+
+  ideasGuardadas.forEach((idea, index) => {
+    doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
+  });
+
+  doc.save(`Capitulo_${numeroCapitulo}.pdf`);
+};
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
