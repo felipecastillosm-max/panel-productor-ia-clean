@@ -87,6 +87,29 @@ const PanelProductorIA = () => {
 
     doc.save(`Capitulo_${numeroCapitulo}.pdf`);
   };
+  const [bloques, setBloques] = useState([]);
+const [bloqueNuevo, setBloqueNuevo] = useState('');
+
+const agregarBloque = () => {
+  if (bloqueNuevo.trim() !== '') {
+    setBloques([...bloques, bloqueNuevo]);
+    setBloqueNuevo('');
+  }
+};
+
+const eliminarBloque = (index) => {
+  const actualizados = bloques.filter((_, i) => i !== index);
+  setBloques(actualizados);
+};
+useEffect(() => {
+  const guardados = localStorage.getItem('bloquesPrograma');
+  if (guardados) setBloques(JSON.parse(guardados));
+}, []);
+
+useEffect(() => {
+  localStorage.setItem('bloquesPrograma', JSON.stringify(bloques));
+}, [bloques]);
+
 
   return (
    <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
@@ -125,6 +148,38 @@ const PanelProductorIA = () => {
           placeholder="Escribe tu idea, frase o acción para el programa"
           className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white"
         />
+<div className="pt-6 border-t border-gray-400 dark:border-gray-600">
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Bloques del programa</h2>
+  <div className="flex gap-2 mt-2">
+    <input
+      type="text"
+      value={bloqueNuevo}
+      onChange={(e) => setBloqueNuevo(e.target.value)}
+      placeholder="Nombre del bloque (ej: Intro, Entrevista)"
+      className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
+    />
+    <button
+      onClick={agregarBloque}
+      className="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700"
+    >
+      Agregar Bloque ➕
+    </button>
+  </div>
+
+  <ul className="mt-4 space-y-1">
+    {bloques.map((bloque, idx) => (
+      <li key={idx} className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded">
+        <span className="text-gray-800 dark:text-white">🎙️ {bloque}</span>
+        <button
+          onClick={() => eliminarBloque(idx)}
+          className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+        >
+          Eliminar
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
 
         <div className="flex gap-4 flex-wrap">
           <button
