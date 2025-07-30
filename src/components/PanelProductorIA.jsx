@@ -90,7 +90,7 @@ const PanelProductorIA = () => {
 
   return (
    <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
-      <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
+      <h1 className="text-2xl font-bold text-center text-gray-800 rojo:text-gray-100">
         Radio Online Loartune 
       </h1>
 
