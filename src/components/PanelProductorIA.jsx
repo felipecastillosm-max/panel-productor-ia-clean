@@ -90,10 +90,9 @@ const PanelProductorIA = () => {
 
   return (
    <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
-      <h1 className="text-2xl font-bold text-center text-gray-800 rojo:text-gray-100">
-        Radio Online Loartune 
-      </h1>
-
+      <h1 className="text-2xl font-bold text-center text-loartune-rojo dark:text-loartune-rojo">
+  Radio Online Loartune 
+</h1>
       <div className="flex gap-4 items-center">
         <input
           type="text"
