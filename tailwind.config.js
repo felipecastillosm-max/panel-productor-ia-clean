@@ -11,7 +11,7 @@ module.exports = {
           amarillo: "#FFC700",
           coral: "#FF9F91",
           rojo: "#FF5757",
-          loartune.negro: "#000000"
+          negro: "#000000"
         },
       },
     },
