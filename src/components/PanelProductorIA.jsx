@@ -147,11 +147,12 @@ const PanelProductorIA = () => {
             {mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}
           </button>
           <button
-            onClick={exportarPDF}
-            className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-          >
-            Exportar PDF 📄
-          </button>
+  onClick={exportarPDF}
+  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+>
+  Exportar PDF 📄
+</button>
+
         </div>
 
         {mostrarHistorial && (
