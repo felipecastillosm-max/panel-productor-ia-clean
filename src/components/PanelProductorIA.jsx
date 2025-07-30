@@ -1,5 +1,8 @@
 // src/components/PanelProductorIA.jsx
 import React, { useState, useEffect } from 'react';
+import ExportarPDF from './ExportarPDF';
+...
+<ExportarPDF />
 
 const PanelProductorIA = () => {
   const [capituloActual, setCapituloActual] = useState('');
