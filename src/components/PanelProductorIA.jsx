@@ -1,8 +1,6 @@
 // src/components/PanelProductorIA.jsx
 import React, { useState, useEffect } from 'react';
-import ExportarPDF from './ExportarPDF';
-...
-<ExportarPDF />
+import jsPDF from 'jspdf';
 
 const PanelProductorIA = () => {
   const [capituloActual, setCapituloActual] = useState('');
@@ -17,16 +15,12 @@ const PanelProductorIA = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const guardadas = localStorage.getItem('ideasGuardadas');
-      if (guardadas) setIdeasGuardadas(JSON.parse(guardadas));
-    }
+    const guardadas = localStorage.getItem('ideasGuardadas');
+    if (guardadas) setIdeasGuardadas(JSON.parse(guardadas));
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
-    }
+    localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
   }, [ideasGuardadas]);
 
   const confirmarCapitulo = () => {
@@ -38,9 +32,10 @@ const PanelProductorIA = () => {
           : parseInt(capituloActual.match(/\d+/)) + 1
       : parseInt(capituloSiguiente);
 
-    const nombre = capituloActual.startsWith("Capítulo") ? `Capítulo ${num}` : capituloActual;
+    const nombre = `Capítulo ${num}`;
 
     setCapituloActual(nombre);
+    setNumeroCapitulo(num);
     setCapituloSiguiente('');
 
     const nuevoHistorial = [
@@ -77,22 +72,21 @@ const PanelProductorIA = () => {
     setHistorialCapitulos(actualizado);
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
-import jsPDF from 'jspdf';
 
-const exportarPDF = () => {
-  const doc = new jsPDF();
-  doc.setFontSize(16);
-  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
 
-  doc.setFontSize(12);
-  doc.text('Ideas guardadas:', 10, 30);
+    doc.setFontSize(12);
+    doc.text('Ideas guardadas:', 10, 30);
 
-  ideasGuardadas.forEach((idea, index) => {
-    doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
-  });
+    ideasGuardadas.forEach((idea, index) => {
+      doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
+    });
 
-  doc.save(`Capitulo_${numeroCapitulo}.pdf`);
-};
+    doc.save(`Capitulo_${numeroCapitulo}.pdf`);
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-900">
@@ -144,13 +138,6 @@ const exportarPDF = () => {
             onClick={limpiarTodo}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
-            <button
-  onClick={exportarPDF}
-  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
->
-  Exportar PDF 📄
-</button>
-
             Limpiar todo 🧽
           </button>
           <button
@@ -159,44 +146,45 @@ const exportarPDF = () => {
           >
             {mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}
           </button>
+          <button
+            onClick={exportarPDF}
+            className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+          >
+            Exportar PDF 📄
+          </button>
         </div>
 
         {mostrarHistorial && (
-  <div className="pt-4 space-y-2">
-    <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
-    <ul className="space-y-1">
-      {historialCapitulos.map((cap, idx) => (
-        <li key={idx} className="flex justify-between items-center bg-gray-200 dark:bg-gray-700 p-2 rounded">
-          <span className="text-gray-800 dark:text-white">
-            📌 Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
-                setIdeasGuardadas(cap.ideas || []);
-              }}
-              className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Recuperar
-            </button>
-            <button
-              onClick={() => {
-                const nuevoHistorial = historialCapitulos.filter((_, i) => i !== idx);
-                setHistorialCapitulos(nuevoHistorial);
-                localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
-              }}
-              className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              Eliminar
-            </button>
+          <div className="pt-4 space-y-2">
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
+            <ul className="space-y-1">
+              {historialCapitulos.map((cap, idx) => (
+                <li key={idx} className="flex justify-between items-center bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                  <span className="text-gray-800 dark:text-white">
+                    📌 Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+                        setIdeasGuardadas(cap.ideas || []);
+                      }}
+                      className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Recuperar
+                    </button>
+                    <button
+                      onClick={() => eliminarHistorialItem(idx)}
+                      className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
+        )}
       </div>
     </div>
   );
