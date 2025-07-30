@@ -28,13 +28,29 @@ const PanelProductorIA = () => {
 
   const confirmarCapitulo = () => {
     const num = capituloSiguiente.trim() === ''
-      ? numeroCapitulo
+      ? capituloActual.trim() === ''
+        ? 1
+        : isNaN(capituloActual)
+          ? 1
+          : parseInt(capituloActual.match(/\d+/)) + 1
       : parseInt(capituloSiguiente);
 
-    setCapituloActual('');
-    setNumeroCapitulo(num);
-    setHistorialCapitulos([...historialCapitulos, { numero: num, nombre: capituloActual }]);
+    const nombre = capituloActual.startsWith("Capítulo") ? `Capítulo ${num}` : capituloActual;
+
+    setCapituloActual(nombre);
     setCapituloSiguiente('');
+
+    const nuevoHistorial = [
+      ...historialCapitulos,
+      {
+        numero: num,
+        nombre: nombre,
+        ideas: [...ideasGuardadas],
+      },
+    ];
+
+    setHistorialCapitulos(nuevoHistorial);
+    localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
   };
 
   const manejarKeyDown = (e) => {
@@ -51,6 +67,12 @@ const PanelProductorIA = () => {
 
   const limpiarTodo = () => {
     setIdeasGuardadas([]);
+  };
+
+  const eliminarHistorialItem = (index) => {
+    const actualizado = historialCapitulos.filter((_, i) => i !== index);
+    setHistorialCapitulos(actualizado);
+    localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
 
   return (
@@ -113,126 +135,40 @@ const PanelProductorIA = () => {
           </button>
         </div>
 
-     {mostrarHistorial && (
-  <div className="pt-4 space-y-2">
-    <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
-    <ul className="space-y-1">
-      {historialCapitulos.map((cap, index) => (
-        <li
-          key={index}
-          className="flex justify-between items-center p-3 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm"
-        >
-          <span className="text-gray-800 dark:text-white">
-            📌 {cap.numero} — {cap.nombre}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
-                setIdeasGuardadas(cap.ideas || []);
-              }}
-              className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Recuperar
-            </button>
-            <button
-              onClick={() => {
-                const actualizado = historialCapitulos.filter((_, i) => i !== index);
-                setHistorialCapitulos(actualizado);
-                localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
-              }}
-              className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              🗑️ Eliminar
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-
-       {historialVisible && (
-  <ul className="space-y-2 pt-4">
-    {historialCapitulos.map((cap, index) => (
-      <li
-        key={index}
-        className="flex justify-between items-center p-3 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm"
-      >
-        <span className="text-gray-800 dark:text-white">
-          📌 {cap.numero} — {cap.nombre}
-        </span>
-        <button
-          onClick={() => {
-            setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
-            setIdeasGuardadas(cap.ideas || []);
-          }}
-          className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Recuperar
-        </button>
-      </li>
-    ))}
-  </ul>
-)}
-const confirmarCapitulo = () => {
-  const num = capituloSiguiente.trim() === ''
-    ? capituloActual.trim() === ''
-      ? 1
-      : isNaN(capituloActual)
-        ? 1
-        : parseInt(capituloActual.match(/\d+/)) + 1
-    : parseInt(capituloSiguiente);
-
-  const nombre = capituloActual.startsWith("Capítulo") ? `Capítulo ${num}` : capituloActual;
-
-  setCapituloActual(nombre);
-  setCapituloSiguiente('');
-
-  const nuevoHistorial = [
-    ...historialCapitulos,
-    {
-      numero: num,
-      nombre: nombre,
-      ideas: [...ideasGuardadas],
-    },
-  ];
-
-  setHistorialCapitulos(nuevoHistorial);
-  localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
-};
-
-              <label className="flex items-center gap-2 w-full">
-                <input
-                  type="checkbox"
-                  onChange={(e) => {
-                    const nuevasIdeas = [...ideasGuardadas];
-                    nuevasIdeas[index] = {
-                      texto: item.texto,
-                      checked: e.target.checked,
-                    };
-                    setIdeasGuardadas(nuevasIdeas);
-                  }}
-                  checked={item.checked}
-                />
-                <span
-                  className={
-                    (item.checked ? 'line-through text-gray-500 dark:text-gray-400' : '') + ' flex-1'
-                  }
+        {mostrarHistorial && (
+          <div className="pt-4 space-y-2">
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
+            <ul className="space-y-1">
+              {historialCapitulos.map((cap, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center p-3 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm"
                 >
-                  • {item.texto}
-                </span>
-              </label>
-              <button
-                onClick={() => setIdeasGuardadas(ideasGuardadas.filter((_, i) => i !== index))}
-                className="text-red-500 hover:text-red-700 font-bold text-sm"
-              >
-                ✖
-              </button>
-            </li>
-          ))}
-        </ul>
+                  <span className="text-gray-800 dark:text-white">
+                    📌 Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+                        setIdeasGuardadas(cap.ideas || []);
+                      }}
+                      className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Recuperar
+                    </button>
+                    <button
+                      onClick={() => eliminarHistorialItem(index)}
+                      className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
