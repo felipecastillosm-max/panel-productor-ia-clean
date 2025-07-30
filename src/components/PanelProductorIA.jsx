@@ -144,6 +144,13 @@ const exportarPDF = () => {
             onClick={limpiarTodo}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
+            <button
+  onClick={exportarPDF}
+  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+>
+  Exportar PDF 📄
+</button>
+
             Limpiar todo 🧽
           </button>
           <button
