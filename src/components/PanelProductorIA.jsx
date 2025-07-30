@@ -113,18 +113,45 @@ const PanelProductorIA = () => {
           </button>
         </div>
 
-        {mostrarHistorial && (
-          <div className="pt-4 space-y-2">
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
-            <ul className="space-y-1">
-              {historialCapitulos.map((cap, idx) => (
-                <li key={idx} className="text-sm text-gray-800 dark:text-white">
-                  Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}
-                </li>
-              ))}
-            </ul>
+     {mostrarHistorial && (
+  <div className="pt-4 space-y-2">
+    <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Historial de capítulos</h2>
+    <ul className="space-y-1">
+      {historialCapitulos.map((cap, index) => (
+        <li
+          key={index}
+          className="flex justify-between items-center p-3 bg-gray-200 dark:bg-gray-700 rounded-md shadow-sm"
+        >
+          <span className="text-gray-800 dark:text-white">
+            📌 {cap.numero} — {cap.nombre}
+          </span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+                setIdeasGuardadas(cap.ideas || []);
+              }}
+              className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Recuperar
+            </button>
+            <button
+              onClick={() => {
+                const actualizado = historialCapitulos.filter((_, i) => i !== index);
+                setHistorialCapitulos(actualizado);
+                localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
+              }}
+              className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              🗑️ Eliminar
+            </button>
           </div>
-        )}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
 
        {historialVisible && (
   <ul className="space-y-2 pt-4">
