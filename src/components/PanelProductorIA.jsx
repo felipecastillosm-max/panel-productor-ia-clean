@@ -4,8 +4,6 @@ import jsPDF from 'jspdf';
 
 const PanelProductorIA = () => {
   const [capituloActual, setCapituloActual] = useState('');
-  const [bloqueNombre, setBloqueNombre] = useState('');
-const [bloqueDescripcion, setBloqueDescripcion] = useState('');
   const [capituloSiguiente, setCapituloSiguiente] = useState('');
   const [numeroCapitulo, setNumeroCapitulo] = useState(1);
   const [idea, setIdea] = useState('');
@@ -18,6 +16,8 @@ const [bloqueDescripcion, setBloqueDescripcion] = useState('');
 
   const [bloques, setBloques] = useState([]);
   const [bloqueNuevo, setBloqueNuevo] = useState('');
+const [bloqueNombre, setBloqueNombre] = useState('');
+const [bloqueDescripcion, setBloqueDescripcion] = useState('');
 
   useEffect(() => {
     const guardadas = localStorage.getItem('ideasGuardadas');
