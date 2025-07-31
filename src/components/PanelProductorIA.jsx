@@ -106,6 +106,12 @@ const exportarPDF = () => {
   });
 
   doc.save(`Capitulo_${numeroCapitulo}.pdf`);
+  doc.text('🧱 Bloques del programa:', 10, y);
+y += 10;
+bloques.forEach((bloque, i) => {
+  doc.text(`• ${bloque.nombre}: ${bloque.descripcion}`, 10, y + i * 10);
+});
+
 };
 
 const agregarBloque = () => {
