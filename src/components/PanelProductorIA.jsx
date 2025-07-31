@@ -290,8 +290,7 @@ const agregarBloque = () => {
           </div>
         )}
       </div>
-    </div>
-  );
-};
+  
+ 
 
 export default PanelProductorIA;
