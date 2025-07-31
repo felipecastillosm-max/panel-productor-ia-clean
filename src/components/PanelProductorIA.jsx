@@ -141,13 +141,42 @@ useEffect(() => {
       </div>
 
       <div className="space-y-4">
-        <input
-          type="text"
-          value={idea}
-          onChange={(e) => setIdea(e.target.value)}
-          placeholder="Escribe tu idea, frase o acción para el programa"
-          className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white"
-        />
+  <input
+    type="text"
+    value={idea}
+    onChange={(e) => setIdea(e.target.value)}
+    placeholder="Escribe tu idea, frase o acción para el programa"
+    className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white"
+  />
+
+  {/* Botones - subidos arriba del bloque de programa */}
+  <div className="flex gap-4 flex-wrap">
+    <button
+      onClick={guardarIdea}
+      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+    >
+      Guardar idea 💡
+    </button>
+    <button
+      onClick={limpiarTodo}
+      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+    >
+      Limpiar todo 🧽
+    </button>
+    <button
+      onClick={() => setMostrarHistorial(!mostrarHistorial)}
+      className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800"
+    >
+      {mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}
+    </button>
+    <button
+      onClick={exportarPDF}
+      className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+    >
+      Exportar PDF 📄
+    </button>
+  </div>
+
 <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Bloques del programa</h2>
   <div className="flex gap-2 mt-2">
