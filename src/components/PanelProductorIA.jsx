@@ -13,16 +13,9 @@ const PanelProductorIA = () => {
     return data ? JSON.parse(data) : [];
   });
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
-
-  const [bloques, setBloques] = useState([]);
-  const [bloqueNuevo, setBloqueNuevo] = useState('');
-const [bloqueNombre, setBloqueNombre] = useState('');
-const [bloqueDescripcion, setBloqueDescripcion] = useState('');
-  const [bloques, setBloques] = useState([]);
+const [bloques, setBloques] = useState([]);
 const [bloqueNuevo, setBloqueNuevo] = useState('');
 const [descripcionBloque, setDescripcionBloque] = useState('');
-
-
   useEffect(() => {
     const guardadas = localStorage.getItem('ideasGuardadas');
     if (guardadas) setIdeasGuardadas(JSON.parse(guardadas));
@@ -116,15 +109,17 @@ const exportarPDF = () => {
 };
 
 const agregarBloque = () => {
-  if (bloqueNuevo.trim() !== '' && descripcionBloque.trim() !== '') {
-    const nuevo = { nombre: bloqueNuevo, descripcion: descripcionBloque };
-    const actualizados = [...bloques, nuevo];
-    setBloques(actualizados);
+  if (bloqueNuevo.trim() !== '') {
+    const nuevo = {
+      nombre: bloqueNuevo,
+      descripcion: descripcionBloque
+    };
+    setBloques([...bloques, nuevo]);
     setBloqueNuevo('');
     setDescripcionBloque('');
-    localStorage.setItem('bloquesPrograma', JSON.stringify(actualizados));
   }
 };
+
 
   const eliminarBloque = (index) => {
     const actualizados = bloques.filter((_, i) => i !== index);
@@ -195,27 +190,48 @@ const agregarBloque = () => {
           </button>
         </div>
 <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
-  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Bloques del programa</h2>
-
-  <div className="flex flex-col md:flex-row gap-2 mb-4">
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Bloques del programa</h2>
+  <div className="flex flex-col sm:flex-row gap-2 mt-2">
     <input
       type="text"
-      value={bloqueNombre}
-      onChange={(e) => setBloqueNombre(e.target.value)}
-      placeholder="Nombre del bloque (ej: Introducción)"
+      value={bloqueNuevo}
+      onChange={(e) => setBloqueNuevo(e.target.value)}
+      placeholder="Nombre del bloque"
       className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
     />
     <input
       type="text"
-      value={bloqueDescripcion}
-      onChange={(e) => setBloqueDescripcion(e.target.value)}
-      placeholder="Descripción del bloque"
+      value={descripcionBloque}
+      onChange={(e) => setDescripcionBloque(e.target.value)}
+      placeholder="Descripción"
       className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
     />
     <button
       onClick={agregarBloque}
       className="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700"
     >
+      Agregar Bloque ➕
+    </button>
+  </div>
+
+  <ul className="mt-4 space-y-1">
+    {bloques.map((bloque, idx) => (
+      <li key={idx} className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-3 rounded">
+        <div>
+          <p className="font-bold text-gray-800 dark:text-white">🎙️ {bloque.nombre}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{bloque.descripcion}</p>
+        </div>
+        <button
+          onClick={() => eliminarBloque(idx)}
+          className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+        >
+          Eliminar
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
       Agregar Bloque ➕
     </button>
   </div>
