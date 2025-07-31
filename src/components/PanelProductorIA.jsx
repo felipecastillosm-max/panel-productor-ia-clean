@@ -194,7 +194,7 @@ const PanelProductorIA = () => {
       type="text"
       value={descripcionBloque}
       onChange={(e) => setDescripcionBloque(e.target.value)}
-      placeholder="Descripción"
+      placeholder="Descripción del bloque"
       className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
     />
     <button
@@ -205,43 +205,19 @@ const PanelProductorIA = () => {
     </button>
   </div>
 
-  <ul className="mt-4 space-y-1">
-    {bloques.map((bloque, idx) => (
-      <li key={idx} className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-3 rounded">
-        <div>
-          <p className="font-bold text-gray-800 dark:text-white">🎙️ {bloque.nombre}</p>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{bloque.descripcion}</p>
-        </div>
-        <button
-          onClick={() => eliminarBloque(idx)}
-          className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-        >
-          Eliminar
-        </button>
-      </li>
-    ))}
-  </ul>
-</div>
-
-      Agregar Bloque ➕
-    </button>
-  </div>
-
-  <ul className="space-y-2">
+  <ul className="mt-4 space-y-2">
     {bloques.map((bloque, idx) => (
       <li
         key={idx}
-        className="flex justify-between items-start bg-gray-100 dark:bg-gray-700 p-3 rounded"
+        className="flex flex-col md:flex-row justify-between md:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded"
       >
         <div>
-          <p className="font-semibold text-gray-900 dark:text-white">🎙️ {bloque.nombre}</p>
-          {bloque.descripcion && (
-            <p className="text-sm text-gray-700 dark:text-gray-300">{bloque.descripcion}</p>
-          )}
+          <p className="text-gray-800 dark:text-white font-semibold">🎙️ {bloque.nombre}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">{bloque.descripcion}</p>
         </div>
         <button
           onClick={() => eliminarBloque(idx)}
-          className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+          className="mt-2 md:mt-0 text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
         >
           Eliminar
         </button>
@@ -249,28 +225,7 @@ const PanelProductorIA = () => {
     ))}
   </ul>
 </div>
-              Agregar Bloque ➕
-            </button>
-          </div>
-<ul className="mt-4 space-y-1">
-  {bloques.map((bloque, idx) => (
-    <li
-      key={idx}
-      className="flex flex-col md:flex-row justify-between md:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded"
-    >
-      <div>
-        <p className="text-gray-800 dark:text-white font-semibold">🎙️ {bloque.nombre}</p>
-        <p className="text-gray-600 dark:text-gray-300 text-sm">{bloque.descripcion}</p>
-      </div>
-      <button
-        onClick={() => eliminarBloque(idx)}
-        className="mt-2 md:mt-0 text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-      >
-        Eliminar
-      </button>
-    </li>
-  ))}
-</ul>
+
 <input
   type="text"
   value={descripcionBloque}
