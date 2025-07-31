@@ -173,19 +173,42 @@ const PanelProductorIA = () => {
         </div>
 
         <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Bloques del programa</h2>
-          <div className="flex gap-2 mt-2">
-            <input
-              type="text"
-              value={bloqueNuevo}
-              onChange={(e) => setBloqueNuevo(e.target.value)}
-              placeholder="Nombre del bloque (ej: Intro, Entrevista)"
-              className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
-            />
-            <button
-              onClick={agregarBloque}
-              className="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700"
-            >
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Bloques del programa</h2>
+
+  <div className="flex gap-2 mb-4">
+    <input
+      type="text"
+      value={bloqueNuevo}
+      onChange={(e) => setBloqueNuevo(e.target.value)}
+      placeholder="Nombre del bloque (ej: Intro, Entrevista)"
+      className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
+    />
+    <button
+      onClick={agregarBloque}
+      className="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700"
+    >
+      Agregar Bloque ➕
+    </button>
+  </div>
+
+  <ul className="space-y-2">
+    {bloques.map((bloque, idx) => (
+      <li
+        key={idx}
+        className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded"
+      >
+        <span className="text-gray-800 dark:text-white">🎙️ {bloque}</span>
+        <button
+          onClick={() => eliminarBloque(idx)}
+          className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+        >
+          Eliminar
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
               Agregar Bloque ➕
             </button>
           </div>
