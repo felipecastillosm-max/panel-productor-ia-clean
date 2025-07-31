@@ -86,17 +86,53 @@ const [bloqueDescripcion, setBloqueDescripcion] = useState('');
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
 
-  const exportarPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
-    doc.setFontSize(12);
-    doc.text('Ideas guardadas:', 10, 30);
-    ideasGuardadas.forEach((idea, index) => {
-      doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
-    });
-    doc.save(`Capitulo_${numeroCapitulo}.pdf`);
-  };
+ const exportarPDF = () => {
+  const doc = new jsPDF();
+  let y = 20;
+
+  doc.setFontSize(16);
+  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, y);
+  y += 10;
+
+  // Ideas
+  doc.setFontSize(14);
+  doc.text('🧠 Ideas guardadas:', 10, y);
+  y += 8;
+  doc.setFontSize(12);
+
+  ideasGuardadas.forEach((idea, index) => {
+    doc.text(`• ${idea.texto}`, 10, y);
+    y += 7;
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  y += 10;
+
+  // Bloques
+  doc.setFontSize(14);
+  doc.text('🎙️ Bloques del programa:', 10, y);
+  y += 8;
+  doc.setFontSize(12);
+
+  bloques.forEach((bloque, index) => {
+    doc.text(`🔹 ${bloque.nombre}`, 10, y);
+    y += 6;
+    if (bloque.descripcion) {
+      doc.text(`   ${bloque.descripcion}`, 12, y);
+      y += 7;
+    }
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  doc.save(`Capitulo_${numeroCapitulo}.pdf`);
+};
+
 
   const agregarBloque = () => {
   if (bloqueNombre.trim() !== '') {
