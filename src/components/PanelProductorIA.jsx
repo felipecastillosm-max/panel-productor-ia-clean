@@ -207,28 +207,11 @@ const agregarBloque = () => {
 
   <ul className="mt-4 space-y-2">
     {bloques.map((bloque, idx) => (
-      <li
-        key={idx}
-        className="flex flex-col md:flex-row justify-between md:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded"
-      >
-        <div className="flex-1">
-          <p className="text-gray-800 dark:text-white font-semibold">🎙️ {bloque.nombre}</p>
-          <p className="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap">{bloque.descripcion}</p>
-        </div>
-        <button
-          onClick={() => eliminarBloque(idx)}
-          className="mt-2 md:mt-0 text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-        >
-          Eliminar
-        </button>
-      </li>
-    ))}
-  </ul>
-</div>
-
-
-
-
+      <ul className="mt-4 space-y-2">
+  {bloques.map((bloque, idx) => (
+    ...
+  ))}
+</ul>
 
 <input
   type="text"
@@ -237,6 +220,7 @@ const agregarBloque = () => {
   placeholder="Descripción del bloque"
   className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
 />
+
 
         {mostrarHistorial && (
           <div className="pt-4 space-y-2">
