@@ -18,6 +18,10 @@ const PanelProductorIA = () => {
   const [bloqueNuevo, setBloqueNuevo] = useState('');
 const [bloqueNombre, setBloqueNombre] = useState('');
 const [bloqueDescripcion, setBloqueDescripcion] = useState('');
+  const [bloques, setBloques] = useState([]);
+const [bloqueNuevo, setBloqueNuevo] = useState('');
+const [descripcionBloque, setDescripcionBloque] = useState('');
+
 
   useEffect(() => {
     const guardadas = localStorage.getItem('ideasGuardadas');
@@ -86,66 +90,41 @@ const [bloqueDescripcion, setBloqueDescripcion] = useState('');
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
 
- const exportarPDF = () => {
+const exportarPDF = () => {
   const doc = new jsPDF();
-  let y = 20;
-
   doc.setFontSize(16);
-  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, y);
-  y += 10;
+  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
 
-  // Ideas
-  doc.setFontSize(14);
-  doc.text('🧠 Ideas guardadas:', 10, y);
-  y += 8;
   doc.setFontSize(12);
+  doc.text('Ideas guardadas:', 10, 30);
 
   ideasGuardadas.forEach((idea, index) => {
-    doc.text(`• ${idea.texto}`, 10, y);
-    y += 7;
-    if (y > 270) {
-      doc.addPage();
-      y = 20;
-    }
+    doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
   });
 
+  let y = 60 + ideasGuardadas.length * 10;
+  doc.setFontSize(12);
+  doc.text('Bloques del programa:', 10, y);
   y += 10;
 
-  // Bloques
-  doc.setFontSize(14);
-  doc.text('🎙️ Bloques del programa:', 10, y);
-  y += 8;
-  doc.setFontSize(12);
-
   bloques.forEach((bloque, index) => {
-    doc.text(`🔹 ${bloque.nombre}`, 10, y);
-    y += 6;
-    if (bloque.descripcion) {
-      doc.text(`   ${bloque.descripcion}`, 12, y);
-      y += 7;
-    }
-    if (y > 270) {
-      doc.addPage();
-      y = 20;
-    }
+    doc.text(`${index + 1}. ${bloque.nombre} - ${bloque.descripcion}`, 10, y);
+    y += 10;
   });
 
   doc.save(`Capitulo_${numeroCapitulo}.pdf`);
 };
 
-
-  const agregarBloque = () => {
-  if (bloqueNombre.trim() !== '') {
-    const nuevoBloque = {
-      nombre: bloqueNombre,
-      descripcion: bloqueDescripcion
-    };
-    setBloques([...bloques, nuevoBloque]);
-    setBloqueNombre('');
-    setBloqueDescripcion('');
+const agregarBloque = () => {
+  if (bloqueNuevo.trim() !== '' && descripcionBloque.trim() !== '') {
+    const nuevo = { nombre: bloqueNuevo, descripcion: descripcionBloque };
+    const actualizados = [...bloques, nuevo];
+    setBloques(actualizados);
+    setBloqueNuevo('');
+    setDescripcionBloque('');
+    localStorage.setItem('bloquesPrograma', JSON.stringify(actualizados));
   }
 };
-
 
   const eliminarBloque = (index) => {
     const actualizados = bloques.filter((_, i) => i !== index);
@@ -266,21 +245,34 @@ const [bloqueDescripcion, setBloqueDescripcion] = useState('');
               Agregar Bloque ➕
             </button>
           </div>
+<ul className="mt-4 space-y-1">
+  {bloques.map((bloque, idx) => (
+    <li
+      key={idx}
+      className="flex flex-col md:flex-row justify-between md:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded"
+    >
+      <div>
+        <p className="text-gray-800 dark:text-white font-semibold">🎙️ {bloque.nombre}</p>
+        <p className="text-gray-600 dark:text-gray-300 text-sm">{bloque.descripcion}</p>
+      </div>
+      <button
+        onClick={() => eliminarBloque(idx)}
+        className="mt-2 md:mt-0 text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+      >
+        Eliminar
+      </button>
+    </li>
+  ))}
+</ul>
+<input
+  type="text"
+  value={descripcionBloque}
+  onChange={(e) => setDescripcionBloque(e.target.value)}
+  placeholder="Descripción del bloque"
+  className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
+/>
 
-          <ul className="mt-4 space-y-1">
-            {bloques.map((bloque, idx) => (
-              <li key={idx} className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                <span className="text-gray-800 dark:text-white">🎙️ {bloque}</span>
-                <button
-                  onClick={() => eliminarBloque(idx)}
-                  className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                >
-                  Eliminar
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+          
 
         {mostrarHistorial && (
           <div className="pt-4 space-y-2">
