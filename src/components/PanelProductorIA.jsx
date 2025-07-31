@@ -4,6 +4,8 @@ import jsPDF from 'jspdf';
 
 const PanelProductorIA = () => {
   const [capituloActual, setCapituloActual] = useState('');
+  const [bloqueNombre, setBloqueNombre] = useState('');
+const [bloqueDescripcion, setBloqueDescripcion] = useState('');
   const [capituloSiguiente, setCapituloSiguiente] = useState('');
   const [numeroCapitulo, setNumeroCapitulo] = useState(1);
   const [idea, setIdea] = useState('');
@@ -97,11 +99,17 @@ const PanelProductorIA = () => {
   };
 
   const agregarBloque = () => {
-    if (bloqueNuevo.trim() !== '') {
-      setBloques([...bloques, bloqueNuevo]);
-      setBloqueNuevo('');
-    }
-  };
+  if (bloqueNombre.trim() !== '') {
+    const nuevoBloque = {
+      nombre: bloqueNombre,
+      descripcion: bloqueDescripcion
+    };
+    setBloques([...bloques, nuevoBloque]);
+    setBloqueNombre('');
+    setBloqueDescripcion('');
+  }
+};
+
 
   const eliminarBloque = (index) => {
     const actualizados = bloques.filter((_, i) => i !== index);
@@ -171,16 +179,22 @@ const PanelProductorIA = () => {
             Exportar PDF 📄
           </button>
         </div>
-
-        <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
+<div className="pt-6 border-t border-gray-400 dark:border-gray-600">
   <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Bloques del programa</h2>
 
-  <div className="flex gap-2 mb-4">
+  <div className="flex flex-col md:flex-row gap-2 mb-4">
     <input
       type="text"
-      value={bloqueNuevo}
-      onChange={(e) => setBloqueNuevo(e.target.value)}
-      placeholder="Nombre del bloque (ej: Intro, Entrevista)"
+      value={bloqueNombre}
+      onChange={(e) => setBloqueNombre(e.target.value)}
+      placeholder="Nombre del bloque (ej: Introducción)"
+      className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
+    />
+    <input
+      type="text"
+      value={bloqueDescripcion}
+      onChange={(e) => setBloqueDescripcion(e.target.value)}
+      placeholder="Descripción del bloque"
       className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
     />
     <button
@@ -195,9 +209,14 @@ const PanelProductorIA = () => {
     {bloques.map((bloque, idx) => (
       <li
         key={idx}
-        className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded"
+        className="flex justify-between items-start bg-gray-100 dark:bg-gray-700 p-3 rounded"
       >
-        <span className="text-gray-800 dark:text-white">🎙️ {bloque}</span>
+        <div>
+          <p className="font-semibold text-gray-900 dark:text-white">🎙️ {bloque.nombre}</p>
+          {bloque.descripcion && (
+            <p className="text-sm text-gray-700 dark:text-gray-300">{bloque.descripcion}</p>
+          )}
+        </div>
         <button
           onClick={() => eliminarBloque(idx)}
           className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -208,7 +227,6 @@ const PanelProductorIA = () => {
     ))}
   </ul>
 </div>
-
               Agregar Bloque ➕
             </button>
           </div>
