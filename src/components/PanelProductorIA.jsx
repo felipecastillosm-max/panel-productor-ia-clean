@@ -15,8 +15,9 @@ const PanelProductorIA = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
   const [bloques, setBloques] = useState([]);
-  const [bloqueNuevo, setBloqueNuevo] = useState('');
-  const [descripcionBloque, setDescripcionBloque] = useState('');
+const [bloqueNuevo, setBloqueNuevo] = useState('');
+const [descripcionBloque, setDescripcionBloque] = useState('');
+
 
   useEffect(() => {
     const guardadas = localStorage.getItem('ideasGuardadas');
