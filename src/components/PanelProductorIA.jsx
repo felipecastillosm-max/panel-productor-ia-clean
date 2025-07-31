@@ -13,22 +13,21 @@ const PanelProductorIA = () => {
     return data ? JSON.parse(data) : [];
   });
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
-const [bloques, setBloques] = useState([]);
-const [bloqueNuevo, setBloqueNuevo] = useState('');
-const [descripcionBloque, setDescripcionBloque] = useState('');
+
+  const [bloques, setBloques] = useState([]);
+  const [bloqueNuevo, setBloqueNuevo] = useState('');
+  const [descripcionBloque, setDescripcionBloque] = useState('');
+
   useEffect(() => {
     const guardadas = localStorage.getItem('ideasGuardadas');
     if (guardadas) setIdeasGuardadas(JSON.parse(guardadas));
+    const bloquesGuardados = localStorage.getItem('bloquesPrograma');
+    if (bloquesGuardados) setBloques(JSON.parse(bloquesGuardados));
   }, []);
 
   useEffect(() => {
     localStorage.setItem('ideasGuardadas', JSON.stringify(ideasGuardadas));
   }, [ideasGuardadas]);
-
-  useEffect(() => {
-    const guardados = localStorage.getItem('bloquesPrograma');
-    if (guardados) setBloques(JSON.parse(guardados));
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('bloquesPrograma', JSON.stringify(bloques));
@@ -44,6 +43,7 @@ const [descripcionBloque, setDescripcionBloque] = useState('');
       : parseInt(capituloSiguiente);
 
     const nombre = `Capítulo ${num}`;
+
     setCapituloActual(nombre);
     setNumeroCapitulo(num);
     setCapituloSiguiente('');
@@ -83,53 +83,38 @@ const [descripcionBloque, setDescripcionBloque] = useState('');
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
 
-const exportarPDF = () => {
-  const doc = new jsPDF();
-  doc.setFontSize(16);
-  doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
-
-  doc.setFontSize(12);
-  doc.text('Ideas guardadas:', 10, 30);
-
-  ideasGuardadas.forEach((idea, index) => {
-    doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
-  });
-
-  let y = 60 + ideasGuardadas.length * 10;
-  doc.setFontSize(12);
-  doc.text('Bloques del programa:', 10, y);
-  y += 10;
-
-  bloques.forEach((bloque, index) => {
-    doc.text(`${index + 1}. ${bloque.nombre} - ${bloque.descripcion}`, 10, y);
-    y += 10;
-  });
-
-  doc.save(`Capitulo_${numeroCapitulo}.pdf`);
-  doc.text('🧱 Bloques del programa:', 10, y);
-y += 10;
-bloques.forEach((bloque, i) => {
-  doc.text(`• ${bloque.nombre}: ${bloque.descripcion}`, 10, y + i * 10);
-});
-
-};
-
-const agregarBloque = () => {
-  if (bloqueNuevo.trim() !== '') {
-    const nuevo = {
-      nombre: bloqueNuevo,
-      descripcion: descripcionBloque
-    };
-    setBloques([...bloques, nuevo]);
-    setBloqueNuevo('');
-    setDescripcionBloque('');
-  }
-};
-
+  const agregarBloque = () => {
+    if (bloqueNuevo.trim() !== '') {
+      const nuevo = { nombre: bloqueNuevo, descripcion: descripcionBloque };
+      setBloques([...bloques, nuevo]);
+      setBloqueNuevo('');
+      setDescripcionBloque('');
+    }
+  };
 
   const eliminarBloque = (index) => {
     const actualizados = bloques.filter((_, i) => i !== index);
     setBloques(actualizados);
+  };
+
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`Capítulo ${numeroCapitulo}: ${capituloActual || '[Sin nombre]'}`, 10, 20);
+
+    doc.setFontSize(12);
+    doc.text('Ideas guardadas:', 10, 30);
+    ideasGuardadas.forEach((idea, index) => {
+      doc.text(`• ${idea.texto}`, 10, 40 + index * 10);
+    });
+
+    let y = 40 + ideasGuardadas.length * 10 + 10;
+    doc.text('🧱 Bloques del programa:', 10, y);
+    bloques.forEach((bloque, i) => {
+      doc.text(`• ${bloque.nombre}: ${bloque.descripcion}`, 10, y + 10 + i * 10);
+    });
+
+    doc.save(`Capitulo_${numeroCapitulo}.pdf`);
   };
 
   return (
