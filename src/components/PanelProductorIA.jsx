@@ -82,16 +82,15 @@ const PanelProductorIA = () => {
     setHistorialCapitulos(actualizado);
     localStorage.setItem('historialCapitulos', JSON.stringify(actualizado));
   };
+const agregarBloque = () => {
+  if (bloqueNuevo.trim() !== '') {
+    setBloques([...bloques, { nombre: bloqueNuevo, descripcion: descripcionBloque }]);
+    setBloqueNuevo('');
+    setDescripcionBloque('');
+  }
+};
 
-  const agregarBloque = () => {
-    if (bloqueNuevo.trim() !== '') {
-      const nuevo = { nombre: bloqueNuevo, descripcion: descripcionBloque };
-      setBloques([...bloques, nuevo]);
-      setBloqueNuevo('');
-      setDescripcionBloque('');
-    }
-  };
-
+  
   const eliminarBloque = (index) => {
     const actualizados = bloques.filter((_, i) => i !== index);
     setBloques(actualizados);
@@ -181,8 +180,9 @@ const PanelProductorIA = () => {
           </button>
         </div>
 <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
-  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Bloques del programa</h2>
-  <div className="flex flex-col sm:flex-row gap-2 mt-2">
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Bloques del programa</h2>
+  
+  <div className="flex flex-col sm:flex-row gap-2">
     <input
       type="text"
       value={bloqueNuevo}
@@ -190,12 +190,11 @@ const PanelProductorIA = () => {
       placeholder="Nombre del bloque"
       className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
     />
-    <input
-      type="text"
+    <textarea
       value={descripcionBloque}
       onChange={(e) => setDescripcionBloque(e.target.value)}
       placeholder="Descripción del bloque"
-      className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white"
+      className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white h-24 resize-y overflow-y-auto"
     />
     <button
       onClick={agregarBloque}
@@ -204,6 +203,28 @@ const PanelProductorIA = () => {
       Agregar Bloque ➕
     </button>
   </div>
+
+  <ul className="mt-4 space-y-2">
+    {bloques.map((bloque, idx) => (
+      <li
+        key={idx}
+        className="flex flex-col md:flex-row justify-between md:items-center bg-gray-100 dark:bg-gray-700 p-3 rounded"
+      >
+        <div>
+          <p className="text-gray-800 dark:text-white font-semibold">🎙️ {bloque.nombre}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap">{bloque.descripcion}</p>
+        </div>
+        <button
+          onClick={() => eliminarBloque(idx)}
+          className="mt-2 md:mt-0 text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+        >
+          Eliminar
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
 
   <ul className="mt-4 space-y-2">
     {bloques.map((bloque, idx) => (
