@@ -33,13 +33,33 @@ const PanelProductorIA = () => {
   }, [bloques]);
 
   const confirmarCapitulo = () => {
-    const num = capituloSiguiente.trim() === ''
-      ? capituloActual.trim() === ''
+  const num = capituloSiguiente.trim() === ''
+    ? capituloActual.trim() === ''
+      ? 1
+      : isNaN(capituloActual)
         ? 1
-        : isNaN(capituloActual)
-          ? 1
-          : parseInt(capituloActual.match(/\d+/)) + 1
-      : parseInt(capituloSiguiente);
+        : parseInt(capituloActual.match(/\d+/)) + 1
+    : parseInt(capituloSiguiente);
+
+  const nombre = `Capítulo ${num}`;
+  setCapituloActual(nombre);
+  setNumeroCapitulo(num);
+  setCapituloSiguiente('');
+
+  const nuevoHistorial = [
+    ...historialCapitulos,
+    {
+      numero: num,
+      nombre: nombre,
+      ideas: [...ideasGuardadas],
+      bloques: [...bloques], // ✅ se agregan también los bloques
+    },
+  ];
+
+  setHistorialCapitulos(nuevoHistorial);
+  localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
+};
+
 
     const nombre = `Capítulo ${num}`;
     setCapituloActual(nombre);
@@ -150,21 +170,18 @@ const PanelProductorIA = () => {
               <li key={idx} className="flex justify-between items-center bg-gray-200 dark:bg-gray-700 p-2 rounded">
                 <span className="text-gray-800 dark:text-white">📌 Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}</span>
                 <div className="flex gap-2">
-                  <button onClick={() => {
-                    setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
-                    setIdeasGuardadas(cap.ideas || []);
-                  }} className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Recuperar</button>
-                  <button onClick={() => eliminarHistorialItem(idx)} className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">Eliminar</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
+                  <button
+  onClick={() => {
+    setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+    setIdeasGuardadas(cap.ideas || []);
+    setBloques(cap.bloques || []); // ✅ restaurar bloques
+  }}
+  className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+>
+  Recuperar
+</button>
 
+                 
 export default PanelProductorIA;
 
 
