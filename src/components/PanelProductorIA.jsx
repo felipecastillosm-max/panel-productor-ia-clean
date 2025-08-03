@@ -83,19 +83,23 @@ const PanelProductorIA = () => {
     if (e.key === 'Enter') confirmarCapitulo();
   };
 
-  const guardarIdea = () => {
-    if (idea.trim() !== '') {
-      setIdeasGuardadas([...ideasGuardadas, { texto: idea, checked: false }]);
-      setIdea('');
-    }
-  };
-
-  const limpiarTodo = () => {
-    setIdeasGuardadas([]);
-    setBloques([]);
-    localStorage.removeItem('ideasGuardadas');
-    localStorage.removeItem('bloquesPrograma');
-  };
+ const guardarIdea = () => {
+  if (idea.trim() !== '') {
+    const nuevasIdeas = [...ideasGuardadas, { texto: idea.trim(), checked: false }];
+    setIdeasGuardadas(nuevasIdeas);
+    setIdea('');
+    localStorage.setItem('ideasGuardadas', JSON.stringify(nuevasIdeas)); // Agregado para persistencia inmediata
+  }
+};
+const limpiarTodo = () => {
+  setIdeasGuardadas([]);
+  setIdea('');
+  setBloques([]);
+  setCapituloActual('');
+  setCapituloSiguiente('');
+  localStorage.removeItem('ideasGuardadas');
+  localStorage.removeItem('bloquesPrograma');
+};
 
   const eliminarHistorialItem = (index) => {
     const actualizado = historialCapitulos.filter((_, i) => i !== index);
@@ -180,6 +184,13 @@ const PanelProductorIA = () => {
 >
   Recuperar
 </button>
+<ul className="space-y-1">
+  {ideasGuardadas.map((idea, idx) => (
+    <li key={idx} className="bg-gray-800 text-white px-3 py-1 rounded">
+      💭 {idea.texto}
+    </li>
+  ))}
+</ul>
 
                  
 export default PanelProductorIA;
