@@ -142,7 +142,9 @@ const PanelProductorIA = () => {
       </div>
 
       <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Bloques del programa</h2>
+        <h2 className="text-lg font-semibold text-yellow-400 mb-2">
+  Bloques del programa
+</h2>
         <div className="flex flex-col sm:flex-row gap-2">
           <input type="text" value={bloqueNuevo} onChange={(e) => setBloqueNuevo(e.target.value)} placeholder="Nombre del bloque" className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white text-gray-900" />
           <textarea value={descripcionBloque} onChange={(e) => setDescripcionBloque(e.target.value)} placeholder="Descripción del bloque" className="flex-1 p-2 border rounded dark:bg-gray-800 dark:text-white text-gray-900 h-24 resize-y overflow-y-auto" />
