@@ -114,7 +114,7 @@ const PanelProductorIA = () => {
   return (
     <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
      <div className="flex items-center gap-4">
-  <img src="/logo-loartune.svg" alt="Logo Loartune" className="w-22 h-22" />
+  <img src="/logo-loartune.svg" alt="Logo Loartune" className="w-24 h-24" />
   <h1 className="text-2xl font-bold text-loartune-rojo">Radio Online Loartune</h1>
 </div>
       <div className="flex gap-4 items-center">
