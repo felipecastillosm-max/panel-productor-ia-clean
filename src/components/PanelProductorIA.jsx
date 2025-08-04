@@ -33,33 +33,13 @@ const PanelProductorIA = () => {
   }, [bloques]);
 
   const confirmarCapitulo = () => {
-  const num = capituloSiguiente.trim() === ''
-    ? capituloActual.trim() === ''
-      ? 1
-      : isNaN(capituloActual)
+    const num = capituloSiguiente.trim() === ''
+      ? capituloActual.trim() === ''
         ? 1
-        : parseInt(capituloActual.match(/\d+/)) + 1
-    : parseInt(capituloSiguiente);
-
-  const nombre = `Capítulo ${num}`;
-  setCapituloActual(nombre);
-  setNumeroCapitulo(num);
-  setCapituloSiguiente('');
-
-  const nuevoHistorial = [
-    ...historialCapitulos,
-    {
-      numero: num,
-      nombre: nombre,
-      ideas: [...ideasGuardadas],
-      bloques: [...bloques], // ✅ se agregan también los bloques
-    },
-  ];
-
-  setHistorialCapitulos(nuevoHistorial);
-  localStorage.setItem('historialCapitulos', JSON.stringify(nuevoHistorial));
-};
-
+        : isNaN(capituloActual)
+          ? 1
+          : parseInt(capituloActual.match(/\d+/)) + 1
+      : parseInt(capituloSiguiente);
 
     const nombre = `Capítulo ${num}`;
     setCapituloActual(nombre);
@@ -72,6 +52,7 @@ const PanelProductorIA = () => {
         numero: num,
         nombre: nombre,
         ideas: [...ideasGuardadas],
+        bloques: [...bloques]
       },
     ];
 
@@ -83,23 +64,22 @@ const PanelProductorIA = () => {
     if (e.key === 'Enter') confirmarCapitulo();
   };
 
- const guardarIdea = () => {
-  if (idea.trim() !== '') {
-    const nuevasIdeas = [...ideasGuardadas, { texto: idea.trim(), checked: false }];
-    setIdeasGuardadas(nuevasIdeas);
+  const guardarIdea = () => {
+    if (idea.trim() !== '') {
+      setIdeasGuardadas([...ideasGuardadas, { texto: idea, checked: false }]);
+      setIdea('');
+    }
+  };
+
+  const limpiarTodo = () => {
     setIdea('');
-    localStorage.setItem('ideasGuardadas', JSON.stringify(nuevasIdeas)); // Agregado para persistencia inmediata
-  }
-};
-const limpiarTodo = () => {
-  setIdeasGuardadas([]);
-  setIdea('');
-  setBloques([]);
-  setCapituloActual('');
-  setCapituloSiguiente('');
-  localStorage.removeItem('ideasGuardadas');
-  localStorage.removeItem('bloquesPrograma');
-};
+    setIdeasGuardadas([]);
+    setBloqueNuevo('');
+    setDescripcionBloque('');
+    setBloques([]);
+    localStorage.removeItem('ideasGuardadas');
+    localStorage.removeItem('bloquesPrograma');
+  };
 
   const eliminarHistorialItem = (index) => {
     const actualizado = historialCapitulos.filter((_, i) => i !== index);
@@ -113,6 +93,11 @@ const limpiarTodo = () => {
       setBloqueNuevo('');
       setDescripcionBloque('');
     }
+  };
+
+  const eliminarBloque = (index) => {
+    const actualizados = bloques.filter((_, i) => i !== index);
+    setBloques(actualizados);
   };
 
   const exportarPDF = () => {
@@ -141,6 +126,11 @@ const limpiarTodo = () => {
         <button onClick={confirmarCapitulo} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Confirmar ➡️</button>
       </div>
       <input type="text" value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Escribe tu idea, frase o acción para el programa" className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white text-gray-900" />
+      <ul className="mt-4 space-y-2">
+        {ideasGuardadas.map((idea, idx) => (
+          <li key={idx} className="bg-gray-100 dark:bg-gray-700 p-2 rounded text-gray-800 dark:text-white">💭 {idea.texto}</li>
+        ))}
+      </ul>
       <div className="flex gap-4 flex-wrap">
         <button onClick={guardarIdea} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar idea 💡</button>
         <button onClick={limpiarTodo} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Limpiar todo 🧽</button>
@@ -174,25 +164,23 @@ const limpiarTodo = () => {
               <li key={idx} className="flex justify-between items-center bg-gray-200 dark:bg-gray-700 p-2 rounded">
                 <span className="text-gray-800 dark:text-white">📌 Capítulo {cap.numero}: {cap.nombre || '[Sin nombre]'}</span>
                 <div className="flex gap-2">
-                  <button
-  onClick={() => {
-    setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
-    setIdeasGuardadas(cap.ideas || []);
-    setBloques(cap.bloques || []); // ✅ restaurar bloques
-  }}
-  className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
->
-  Recuperar
-</button>
-<ul className="space-y-1">
-  {ideasGuardadas.map((idea, idx) => (
-    <li key={idx} className="bg-gray-800 text-white px-3 py-1 rounded">
-      💭 {idea.texto}
-    </li>
-  ))}
-</ul>
+                  <button onClick={() => {
+                    setCapituloActual(cap.nombre || `Capítulo ${cap.numero}`);
+                    setIdeasGuardadas(cap.ideas || []);
+                    setBloques(cap.bloques || []);
+                  }} className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Recuperar</button>
+                  <button onClick={() => eliminarHistorialItem(idx)} className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">Eliminar</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
 
-                 
 export default PanelProductorIA;
+
 
 
