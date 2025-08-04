@@ -115,8 +115,13 @@ const PanelProductorIA = () => {
     <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
       <div className="flex items-center justify-between">
         <img src="/logo-loartune.png" alt="Logo Loartune" className="h-12" />
+       
         <h1 className="text-2xl font-bold text-loartune-rojo text-center w-full">Radio Online Loartune</h1>
       </div>
+<div className="flex items-center gap-4">
+  <img src="/Musica + Podcast.svg" alt="Logo Loartune" className="w-16 h-16 object-contain" />
+  <h1 className="text-2xl font-bold text-loartune-rojo">Radio Online Loartune</h1>
+</div>
 
       <div className="flex gap-4 items-center">
         <input type="text" value={capituloActual} onChange={(e) => setCapituloActual(e.target.value)} placeholder="Nombre del capítulo" className="border rounded-md p-2 flex-1 text-gray-900" />
