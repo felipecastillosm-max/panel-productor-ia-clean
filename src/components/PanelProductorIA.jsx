@@ -75,6 +75,11 @@ const PanelProductorIA = () => {
     setIdeasGuardadas(actualizadas);
   };
 
+  const eliminarBloque = (index) => {
+    const actualizados = bloques.filter((_, i) => i !== index);
+    setBloques(actualizados);
+  };
+
   const eliminarHistorialItem = (index) => {
     const actualizado = historialCapitulos.filter((_, i) => i !== index);
     setHistorialCapitulos(actualizado);
@@ -87,11 +92,6 @@ const PanelProductorIA = () => {
       setBloqueNuevo('');
       setDescripcionBloque('');
     }
-  };
-
-  const eliminarBloque = (index) => {
-    const actualizados = bloques.filter((_, i) => i !== index);
-    setBloques(actualizados);
   };
 
   const exportarPDF = () => {
@@ -112,41 +112,32 @@ const PanelProductorIA = () => {
   };
 
   return (
-  <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6 relative">
-    <img
-      src="/logo-loartune.svg"
-      alt="Logo Loartune"
-      className="h-12 w-auto absolute top-4 left-4"
-    />
-  <img src={`${process.env.PUBLIC_URL || ''}/logo-loartune.svg`} alt="Logo Loartune" className="h-12 w-auto absolute top-4 left-4" />
-    <h1 className="text-2xl font-bold text-center text-loartune-rojo">
-      Radio Online Loartune
-    </h1>
-    ...
-
-      </div>
+    <div className="min-h-screen p-6 max-w-4xl mx-auto bg-loartune-negro text-white rounded-xl shadow-md space-y-6">
+      <img src="/logo-loartune.svg" alt="Logo Loartune" className="h-12 w-auto absolute top-4 left-4" />
+      <h1 className="text-2xl font-bold text-center text-loartune-rojo">Radio Online Loartune</h1>
 
       <div className="flex gap-4 items-center">
         <input type="text" value={capituloActual} onChange={(e) => setCapituloActual(e.target.value)} placeholder="Nombre del capítulo" className="border rounded-md p-2 flex-1 text-gray-900" />
         <input type="text" value={capituloSiguiente} onChange={(e) => setCapituloSiguiente(e.target.value)} onKeyDown={manejarKeyDown} placeholder={numeroCapitulo.toString()} className="border rounded-md p-2 w-32 text-gray-900" />
-        <button onClick={confirmarCapitulo} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Confirmar ➔</button>
+        <button onClick={confirmarCapitulo} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Confirmar ➡️</button>
       </div>
 
-      <input type="text" value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Escribe tu idea, frase o acción para el programa" className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white text-gray-900" />
-
-      <ul className="space-y-2">
-        {ideasGuardadas.map((item, idx) => (
-          <li key={idx} className="flex justify-between bg-gray-100 dark:bg-gray-700 p-2 rounded">
-            <span className="text-gray-800 dark:text-white">💡 {item.texto}</span>
-            <button onClick={() => eliminarIdea(idx)} className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      <div className="space-y-2">
+        <input type="text" value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Escribe tu idea, frase o acción para el programa" className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white text-gray-900" />
+        <ul className="space-y-1">
+          {ideasGuardadas.map((idea, idx) => (
+            <li key={idx} className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded">
+              <span className="text-gray-800 dark:text-white">💡 {idea.texto}</span>
+              <button onClick={() => eliminarIdea(idx)} className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Eliminar</button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="flex gap-4 flex-wrap">
         <button onClick={guardarIdea} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar idea 💡</button>
-        <button onClick={() => setMostrarHistorial(!mostrarHistorial)} className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">{mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}</button>
         <button onClick={exportarPDF} className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Exportar PDF 📄</button>
+        <button onClick={() => setMostrarHistorial(!mostrarHistorial)} className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">{mostrarHistorial ? 'Ocultar historial 📂' : 'Ver historial 📁'}</button>
       </div>
 
       <div className="pt-6 border-t border-gray-400 dark:border-gray-600">
@@ -193,3 +184,4 @@ const PanelProductorIA = () => {
 };
 
 export default PanelProductorIA;
+
