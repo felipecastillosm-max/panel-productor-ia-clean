@@ -118,7 +118,7 @@ const PanelProductorIA = () => {
       alt="Logo Loartune"
       className="h-12 w-auto absolute top-4 left-4"
     />
-    <img src="/logo-loartune.svg" alt="Logo de prueba" style={{ width: '100px' }} />
+   <img src="/logo-loartune.svg" alt="Logo Loartune" className="h-12 w-auto absolute top-4 left-4" />
     <h1 className="text-2xl font-bold text-center text-loartune-rojo">
       Radio Online Loartune
     </h1>
